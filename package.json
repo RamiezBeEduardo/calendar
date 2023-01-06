@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/passion-one": "^4.5.9",
+    "@fontsource/roboto-condensed": "^4.5.9",
     "@types/react-calendar": "^3.9.0",
     "antd": "^5.1.0",
     "axios": "^1.2.2",

@@ -7,6 +7,8 @@ import {addDays, addMinutes, format} from 'date-fns'
 import 'antd/dist/reset.css';
 import {Typography, Table, Tag, Col, Row, Input, Modal} from "antd";
 import axios from 'axios'
+import "@fontsource/roboto-condensed"
+import "@fontsource/passion-one"
 
 const Schedule = (props: any) => {
     const cellClick = (e: any) => {
