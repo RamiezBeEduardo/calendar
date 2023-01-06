@@ -1,24 +1,24 @@
-import {useState} from 'react'
+import {useEffect, useState, Suspense} from 'react'
 import styles from './index.module.css'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import {addDays, addMinutes, format} from 'date-fns'
-import oData from './data.json'
+//import oData from './data.json'
 import 'antd/dist/reset.css';
-import {Typography, Table, Tag, Col, Row, Input, Modal} from "antd";
+import {Typography, Table, Tag, Col, Row, Input, Modal, Space, Button} from "antd";
+import axios from 'axios'
 
 const Schedule = (props: any) => {
-    const cellClick = (e: any) => {
+    const cellClick = (e: any, c: any) => {
         console.log('cellClick')
         console.log(e)
-        props.onChangeData(e)
+        props.onChangeData(e, c)
     }
 
     console.log('yyy')
-    console.log(oData)
 
     let today = format(new Date, 'yyyy-MM-dd')
-    let now = format(addMinutes(new Date, 45),  'HH:mm')
+    let now = format(addMinutes(new Date, 15),  'HH:mm')
     console.log(today)
     console.log(props.day)
 
@@ -31,14 +31,13 @@ const Schedule = (props: any) => {
         if (props.day == today && props.items[i].hInicio <= now) {
             console.log("I:" + props.items[i].hInicio)
             console.log("N:" + now)
-            props.items[i].estado = 'Ocupado'
-
+            props.items[i].estado = 'xxx'
         }
 
         switch (props.items[i].estado) {
             case 'libre':
                 element =
-                    <Col span={6} >
+                    <Col span={12} >
                         <div
                             style={{
                                 outline: '.5px rgba(0, 0, 0, 0.16) solid',
@@ -47,21 +46,81 @@ const Schedule = (props: any) => {
                                 backgroundColor: 'rgba(255,255,255,0.58)', cursor: 'pointer'}}
                             className={styles.item}
                             onClick={() => {cellClick(props.items[i].hInicio)}}
-                        >{props.items[i].hInicio + " - " + props.items[i].hFin}</div>
+                        >
+                            {props.items[i].estado}
+                            {props.items[i].hInicio + " - " + props.items[i].hFin}
+                        </div>
                     </Col>
                 break;
-            default:
+            case 'cita':
                 element =
-                    <Col span={6}>
+                    <Col span={12}>
+                        <div style={{
+                            outline: '.5px rgba(0, 0, 0, 0.16) solid',
+                            color: 'blue',
+                            fontWeight: 'bold',
+                            backgroundColor: 'rgba(255,255,255,0.58)',
+                            opacity: '1'
+                        }} className={styles.item} >
+                            <div style={{fontSize: '1rem', paddingTop: '6px'}}>{props.items[i].hInicio + " - " + props.items[i].hFin}</div>
+                            <div style={{fontSize: '1.2rem', fontStyle: 'italic', textTransform: 'uppercase', padding: '6px'}}>
+                                {props.items[i].usuario}
+                            </div>
+                            <div>
+                                {props.items[i].usuario &&
+                                    <Space wrap>
+                                        <Tag color='#f50'>
+                                            <a
+                                                style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}
+                                                // onClick={() => {cellClick('cita')}}
+                                            >
+                                                Cita realizada
+                                            </a>
+                                        </Tag>
+                                        <Tag color='#87d068'>
+                                            <a
+                                                style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}
+                                                // onClick={() => {cellClick('cita')}}
+                                            >
+                                                Cita no realizada
+                                            </a>
+                                        </Tag>
+                                    </Space>
+                                }
+                            </div>
+
+                        </div>
+                    </Col>
+                break;
+
+            case 'Ocupado':
+                element =
+                    <Col span={12}>
                         <div style={{
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'gray',
                             fontWeight: 'bold',
                             backgroundColor: 'rgba(238,238,238,0.58)',
-                            opacity: '.6'
+                            opacity: '1'
                         }} className={styles.item} >
                             <div>{props.items[i].hInicio + " - " + props.items[i].hFin}</div>
-                            <div style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}>{props.items[i].usuario}XXX</div>
+                            <div style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}>
+                                {props.items[i].usuario}
+                            </div>
+                            <div>
+                                {props.items[i].usuario &&
+                                    <Space wrap>
+                                        {props.items[i].estado}
+                                        <a
+                                            style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}
+                                            onClick={() => {cellClick(props.items[i].hInicio, 'cita')}}
+                                        >
+                                            Registrar cita
+                                        </a>
+                                    </Space>
+                                }
+                            </div>
+
                         </div>
                     </Col>
                 break;
@@ -87,56 +146,88 @@ const Schedule = (props: any) => {
 
 function Component() {
     const [currentDay, setCurrentDay] = useState(format(new Date, 'yyyy-MM-dd'))
-    const [data, setData] = useState(oData);
+    const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
     const [isModalOpen, setIsModalOpen] = useState(false)
+
+    console.log('data')
+    console.log(data)
+
+    useEffect(() => {
+        (async () => {
+            const d = await axios.get('http://127.0.0.1:5984/citas/_all_docs?include_docs=true', {
+                auth: {
+                    username: 'admin',
+                    password: 'admin'
+                }
+            })
+            setData(d.data.rows[0].doc)
+        })()
+    }, []);
+
+
+
 
 
     const handleOk = () => {
         setIsModalOpen(false)
     }
-    const changeData = (e: any) => {
+    const changeData = async (e: any, c: any) => {
         console.log('xxx')
         console.log(e)
         let items = {...data};
 
-        let c = 0
-        for (const fecha in items["Piura"].fechas) {
-            console.log(fecha)
-            let list = items["Piura"].fechas[fecha].filter((it: any) => { return it.usuario == code});
-            console.log('list')
-            console.log(list)
-            c = c + list.length
-        }
-        console.log('C: ' + c);
-        if (c) {
-            setIsModalOpen(true)
-            return
-        }
+        // let c = 0
+        // for (const fecha in items["Piura"].fechas) {
+        //     console.log(fecha)
+        //     let list = items["Piura"].fechas[fecha].filter((it: any) => { return it.usuario == code});
+        //     console.log('list')
+        //     console.log(list)
+        //     c = c + list.length
+        // }
+        // console.log('C: ' + c);
+        // if (c) {
+        //     setIsModalOpen(true)
+        //     return
+        // }
 
         // @ts-ignore
         let l = (items["Piura"].fechas[currentDay].length)
         // @ts-ignore
         for (let i = 0; i < items["Piura"].fechas[currentDay].length; i++) {
             // @ts-ignore
+            
             console.log(i)
+            console.log(items["Piura"].fechas[currentDay][i]?.hInicio)
+            console.log(e.substring(0, 5))
             if (items["Piura"].fechas[currentDay][i]?.hInicio == e.substring(0, 5)) {
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].estado = "Ocupado"
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].usuario = code
-                // @ts-ignore
-                console.log(items["Piura"].fechas[currentDay][i].estado)
+                console.log('rrrr')
+                console.log(c)
+                items["Piura"].fechas[currentDay][i].estado = c
             }
         }
+
+        console.log('items')
+        console.log(items)
+
+        await axios.put('http://127.0.0.1:5984/citas/' +   "e32885688ef99ddfc19c80ddd9000af3",
+            {
+                "_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
+                ...items
+            }, {
+                auth: {
+                    username: 'admin',
+                    password: 'admin'
+                }
+            })
+
 
         setData(items)
     }
     const tile = (date: Date) => {
         let fdate = format(date, 'yyyy-MM-dd')
-
         // @ts-ignore
-        if (data["Piura"].fechas[fdate]) {
+        if (data && data["Piura"]?.fechas[fdate]) {
             // @ts-ignore
             let _empty = data["Piura"].fechas[fdate].filter((d: any) => {
                 return d.estado == "libre"
@@ -174,21 +265,21 @@ function Component() {
             <Calendar
                 //tileDisabled={({activeStartDate, date, view }) => date.getDay() === 0}
                 //tileDisabled={({activeStartDate, date, view }) => {tile(date); return false}}
-                tileDisabled={({activeStartDate, date, view}) => {
-                    return tile(date)
-                }}
+                // tileDisabled={({activeStartDate, date, view}) => {
+                //     return tile(date)
+                // }}
                 //tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null}
                 //minDetail="month"
                 //activeStartDate={addDays(new Date(), 1)}
-                minDate={addDays(new Date(), 0)}
-                maxDate={addDays(new Date(), 10)}
+                //minDate={addDays(new Date(), 0)}
+                maxDate={addDays(new Date(), 1)}
                 locale="es-PE"
                 onClickDay={clickDay}
             />
             <h3 style={{color: '#003659', marginBottom: '0px', marginTop: '30px', textTransform: "uppercase"}}>
                 2. Seleccione un horario libre de la lista
             </h3>
-            <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/>
+            {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/> }
             <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} >
                 Usuario {code}, Ud. ya tiene una cita
             </Modal>

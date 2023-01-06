@@ -1,11 +1,12 @@
-import {useState} from 'react'
+import {useEffect, useState, Suspense} from 'react'
 import styles from './index.module.css'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import {addDays, addMinutes, format} from 'date-fns'
-import oData from './data.json'
+//import oData from './data.json'
 import 'antd/dist/reset.css';
 import {Typography, Table, Tag, Col, Row, Input, Modal} from "antd";
+import axios from 'axios'
 
 const Schedule = (props: any) => {
     const cellClick = (e: any) => {
@@ -17,19 +18,16 @@ const Schedule = (props: any) => {
     console.log('yyy')
 
     let today = format(new Date, 'yyyy-MM-dd')
-    let now = format(addMinutes(new Date, 45),  'HH:mm')
+    let now = format(addMinutes(new Date, 15),  'HH:mm')
     console.log(today)
     console.log(props.day)
 
     let cdata = []
     for (let i = 0; i < props?.items?.length; i++) {
-        //columns.push({title: props.items[i].hInicio + " - " + props.items[i].hFin, index: "estado"}
+        console.log("I:" + props.items[i].hInicio)
+        console.log("N:" + now)
         let element
-
-
         if (props.day == today && props.items[i].hInicio <= now) {
-            console.log("I:" + props.items[i].hInicio)
-            console.log("N:" + now)
             props.items[i].estado = 'Ocupado'
         }
 
@@ -68,14 +66,6 @@ const Schedule = (props: any) => {
         cdata.push(element)
     }
 
-
-    // return (
-    //     <div style={{marginBottom: "20px", marginTop: "20px", fontFamily: "Arial, Helvetica"}}>
-    //         <Table bordered columns={columns} dataSource={cdata} size="small"
-    //         />
-    //     </div>
-    // )
-
     return (
         <Row gutter={16} className={styles.grid}>
             {cdata}
@@ -85,15 +75,31 @@ const Schedule = (props: any) => {
 
 function Component() {
     const [currentDay, setCurrentDay] = useState(format(new Date, 'yyyy-MM-dd'))
-    const [data, setData] = useState(oData);
+    const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
     const [isModalOpen, setIsModalOpen] = useState(false)
 
+    console.log('data')
+    console.log(data)
+
+    useEffect(() => {
+        (async () => {
+            const d = await axios.get('http://127.0.0.1:5984/citas/_all_docs?include_docs=true', {
+                auth: {
+                    username: 'admin',
+                    password: 'admin'
+                }
+            })
+            console.log(d);
+
+            setData(d.data.rows[0].doc)
+        })()
+    }, []);
 
     const handleOk = () => {
         setIsModalOpen(false)
     }
-    const changeData = (e: any) => {
+    const changeData = async (e: any) => {
         console.log('xxx')
         console.log(e)
         let items = {...data};
@@ -128,13 +134,33 @@ function Component() {
             }
         }
 
+        //http://127.0.0.1:5984/my_database/001/
+        /*
+          "_id": "e32885688ef99ddfc19c80ddd9000af3",
+  "_rev": "39-99ae1fcde629864985529027d6ff4938",
+
+         */
+
+        console.log(data)
+
+        await axios.put('http://127.0.0.1:5984/citas/' +   "e32885688ef99ddfc19c80ddd9000af3",
+            {
+                //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
+                "_rev": data._rev,
+                ...items
+            }, {
+                auth: {
+                    username: 'admin',
+                    password: 'admin'
+                }
+        })
+
         setData(items)
     }
     const tile = (date: Date) => {
         let fdate = format(date, 'yyyy-MM-dd')
-
         // @ts-ignore
-        if (data["Piura"].fechas[fdate]) {
+        if (data && data["Piura"]?.fechas[fdate]) {
             // @ts-ignore
             let _empty = data["Piura"].fechas[fdate].filter((d: any) => {
                 return d.estado == "libre"
@@ -186,7 +212,7 @@ function Component() {
             <h3 style={{color: '#003659', marginBottom: '0px', marginTop: '30px', textTransform: "uppercase"}}>
                 2. Seleccione un horario libre de la lista
             </h3>
-            <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/>
+            {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/> }
             <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} >
                 Usuario {code}, Ud. ya tiene una cita
             </Modal>
