@@ -54,7 +54,7 @@ const Schedule = (props: any) => {
             //     break;
             case 'cita':
                 element =
-                    <Col span={12}>
+                    <Col span={24}>
                         <div style={{
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'gray',
@@ -72,6 +72,15 @@ const Schedule = (props: any) => {
                                 letterSpacing: '-.3px'
                             }}>
                                 {props.items[i].usuario}
+                            </div>
+                            <div style={{
+                                fontSize: '.7rem',
+                                color: '#3a3aef',
+                                textDecoration: 'underline',
+                                fontWeight: 'bold',
+                                letterSpacing: '-.3px'
+                            }}>
+                                {props.items[i].enlace}
                             </div>
                             <div>
                                 {props.items[i].usuario &&
@@ -115,7 +124,7 @@ const Schedule = (props: any) => {
                 break;
             case 'did':
                 element =
-                    <Col span={12}>
+                    <Col span={24}>
                         <div style={{
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'white',
@@ -134,6 +143,7 @@ const Schedule = (props: any) => {
                             }}>
                                 {props.items[i].usuario}
                             </div>
+
                             <div>
                                 {props.items[i].usuario &&
                                     <Space wrap>
@@ -143,13 +153,20 @@ const Schedule = (props: any) => {
                                     </Space>
                                 }
                             </div>
-
+                            <div style={{
+                                fontSize: '.7rem',
+                                textTransform: 'uppercase',
+                                fontStyle: 'italic',
+                                letterSpacing: '-.3px'
+                            }}>
+                                {props.items[i].enlace}
+                            </div>
                         </div>
                     </Col>
                 break;
             case 'dont':
                 element =
-                    <Col span={12}>
+                    <Col span={24}>
                         <div style={{
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'white',
@@ -168,6 +185,7 @@ const Schedule = (props: any) => {
                             }}>
                                 {props.items[i].usuario}
                             </div>
+
                             <div>
                                 {props.items[i].usuario &&
                                     <Space wrap>
@@ -177,13 +195,20 @@ const Schedule = (props: any) => {
                                     </Space>
                                 }
                             </div>
-
+                            <div style={{
+                                fontSize: '.7rem',
+                                textTransform: 'uppercase',
+                                fontStyle: 'italic',
+                                letterSpacing: '-.3px'
+                            }}>
+                                {props.items[i].enlace}
+                            </div>
                         </div>
                     </Col>
                 break;
             case 'Ocupado':
                 element =
-                    <Col span={12}>
+                    <Col span={24}>
                         <div style={{
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'gray',
@@ -246,7 +271,8 @@ function Component() {
     const [currentDay, setCurrentDay] = useState(format(new Date, 'yyyy-MM-dd'))
     const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState({state: false, type: null, data: null})
+    const [chunkValue, setChunkValue] = useState()
 
     console.log('data')
     console.log(data)
@@ -265,7 +291,12 @@ function Component() {
 
 
     const handleOk = () => {
-        setIsModalOpen(false)
+        changeData(isModalOpen.type, isModalOpen.data)
+        setIsModalOpen({state: false, type: null, data: null})
+    }
+
+    const _changeData = async (e: any, c: any) => {
+        setIsModalOpen({state: true, type: e, data: c})
     }
     const changeData = async (e: any, c: any) => {
         console.log('xxx')
@@ -299,6 +330,7 @@ function Component() {
                 console.log('rrrr')
                 console.log(c)
                 items["Piura"].fechas[currentDay][i].estado = c
+                items["Piura"].fechas[currentDay][i].enlace = chunkValue
             }
         }
 
@@ -346,6 +378,9 @@ function Component() {
         setCode(e.target.value)
     }
 
+    const changeChunk = (e: any) => {
+        setChunkValue(e.target.value)
+    }
     return (
         <div className={styles.component}>
             <h2 style={{color: '#003659', marginBottom: '30px', marginTop: '20px', textTransform: "uppercase"}}>Gestión
@@ -374,9 +409,9 @@ function Component() {
             <h3 style={{color: '#003659', marginBottom: '0px', marginTop: '30px', textTransform: "uppercase"}}>
                 2. Seleccione un horario libre de la lista
             </h3>
-            {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/>}
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk}>
-                Usuario {code}, Ud. ya tiene una cita
+            {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={_changeData}/>}
+            <Modal title="Ingrese dato" open={isModalOpen.state} onOk={handleOk}>
+                <Input value={chunkValue} onChange={changeChunk} />
             </Modal>
         </div>
     )
