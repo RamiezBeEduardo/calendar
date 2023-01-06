@@ -134,16 +134,9 @@ function Component() {
             }
         }
 
-        //http://127.0.0.1:5984/my_database/001/
-        /*
-          "_id": "e32885688ef99ddfc19c80ddd9000af3",
-  "_rev": "39-99ae1fcde629864985529027d6ff4938",
-
-         */
-
         console.log(data)
 
-        await axios.put('http://127.0.0.1:5984/citas/' +   "e32885688ef99ddfc19c80ddd9000af3",
+        let n = await axios.put('http://127.0.0.1:5984/citas/' +   "f30b185afaa3de5ad3f41f5d54001c1c",
             {
                 //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                 "_rev": data._rev,
@@ -154,7 +147,7 @@ function Component() {
                     password: 'admin'
                 }
         })
-
+        console.log("n:" +  JSON.stringify(n))
         setData(items)
     }
     const tile = (date: Date) => {
