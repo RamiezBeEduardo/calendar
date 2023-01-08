@@ -10,24 +10,17 @@ import axios from 'axios'
 import "@fontsource/roboto-condensed"
 import "@fontsource/passion-one"
 
+const TextArea = Input.TextArea
+
 const Schedule = (props: any) => {
     const cellClick = (e: any) => {
-        console.log('cellClick')
-        console.log(e)
         props.onChangeData(e)
     }
 
-    console.log('yyy')
-
     let today = format(new Date, 'yyyy-MM-dd')
     let now = format(addMinutes(new Date, 15),  'HH:mm')
-    console.log(today)
-    console.log(props.day)
-
     let cdata = []
     for (let i = 0; i < props?.items?.length; i++) {
-        console.log("I:" + props.items[i].hInicio)
-        console.log("N:" + now)
         let element
         if (props.day == today && props.items[i].hInicio <= now) {
             props.items[i].estado = 'Ocupado'
@@ -79,10 +72,8 @@ function Component() {
     const [currentDay, setCurrentDay] = useState(format(new Date, 'yyyy-MM-dd'))
     const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
+    const [comment, setComment] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false)
-
-    console.log('data')
-    console.log(data)
 
     useEffect(() => {
         (async () => {
@@ -92,29 +83,19 @@ function Component() {
                     password: 'admin'
                 }
             })
-            console.log(d);
-
             setData(d.data.rows[0].doc)
         })()
     }, []);
-
     const handleOk = () => {
         setIsModalOpen(false)
     }
     const changeData = async (e: any) => {
-        console.log('xxx')
-        console.log(e)
         let items = {...data};
-
         let c = 0
         for (const fecha in items["Piura"].fechas) {
-            console.log(fecha)
             let list = items["Piura"].fechas[fecha].filter((it: any) => { return it.usuario == code});
-            console.log('list')
-            console.log(list)
             c = c + list.length
         }
-        console.log('C: ' + c);
         if (c) {
             setIsModalOpen(true)
             return
@@ -125,20 +106,17 @@ function Component() {
         // @ts-ignore
         for (let i = 0; i < items["Piura"].fechas[currentDay].length; i++) {
             // @ts-ignore
-            console.log(i)
             if (items["Piura"].fechas[currentDay][i]?.hInicio == e.substring(0, 5)) {
                 // @ts-ignore
                 items["Piura"].fechas[currentDay][i].estado = "Ocupado"
                 // @ts-ignore
                 items["Piura"].fechas[currentDay][i].usuario = code
                 // @ts-ignore
-                console.log(items["Piura"].fechas[currentDay][i].estado)
+                items["Piura"].fechas[currentDay][i].comment = comment
             }
         }
 
-        console.log(data)
-
-        let n = await axios.put('http://127.0.0.1:5984/citas/' +   "f30b185afaa3de5ad3f41f5d54001c1c",
+        let n = await axios.put('http://127.0.0.1:5984/citas/' +   "e32885688ef99ddfc19c80ddd9000af3",
             {
                 //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                 "_rev": data._rev,
@@ -149,7 +127,6 @@ function Component() {
                     password: 'admin'
                 }
         })
-        console.log("n:" +  JSON.stringify(n))
         setData(items)
     }
     const tile = (date: Date) => {
@@ -172,11 +149,12 @@ function Component() {
         setCurrentDay(format(day, 'yyyy-MM-dd'))
     }
 
-    // @ts-ignore
-
     const changeCode = (e: any) => {
-        console.log(e)
         setCode(e.target.value)
+    }
+
+    const changeComment = (e: any) => {
+        setComment(e.target.value)
     }
 
     return (
@@ -204,6 +182,10 @@ function Component() {
                 locale="es-PE"
                 onClickDay={clickDay}
             />
+            <h3 style={{color: '#003659', marginBottom: '5px', marginTop: '30px', textTransform: "uppercase"}}>
+                1. Describa la razón de su cita
+            </h3>
+            <TextArea value={comment} onChange={changeComment} />
             <h3 style={{color: '#003659', marginBottom: '0px', marginTop: '30px', textTransform: "uppercase"}}>
                 2. Seleccione un horario libre de la lista
             </h3>

@@ -19,6 +19,32 @@
     width: unset !important;
 }
 
+.component :global(.react-calendar) :global(.react-calendar__tile) {
+    color: #2f69bd;
+}
+
+.component :global(.react-calendar) :global(.react-calendar__month-view__days__day--weekend) abbr {
+    color: #de0505 !important;
+}
+
+.component :global(.react-calendar) :global(.react-calendar__tile):disabled {
+
+    background-color: white;
+}
+
+
+.component :global(.react-calendar) :global(.react-calendar__tile):disabled abbr {
+    /*filter: grayscale(1);*/
+    color: #938989 !important;
+    background-color: white;
+}
+
+.component :global(.react-calendar) :global(.react-calendar__tile) abbr {
+    font-family: "Passion One", Arial;
+    font-size: 1.5rem;
+}
+
+
 .grid {
     /*outline: 1px solid blue;*/
     margin-top: 0px;

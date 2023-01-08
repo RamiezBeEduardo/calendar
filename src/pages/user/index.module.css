@@ -17,13 +17,10 @@
 
 .component :global(.react-calendar) {
     width: unset !important;
-
-
 }
 
-
 .component :global(.react-calendar) :global(.react-calendar__tile) {
-    color: #0580e8;
+    color: #2f69bd;
 }
 
 .component :global(.react-calendar) :global(.react-calendar__month-view__days__day--weekend) abbr {

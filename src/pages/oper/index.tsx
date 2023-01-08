@@ -10,48 +10,20 @@ import axios from 'axios'
 
 const Schedule = (props: any) => {
     const cellClick = (e: any, c: any) => {
-        console.log('cellClick')
-        console.log(e)
         props.onChangeData(e, c)
     }
 
-    console.log('yyy')
-
     let today = format(new Date, 'yyyy-MM-dd')
     let now = format(addMinutes(new Date, 15), 'HH:mm')
-    console.log(today)
-    console.log(props.day)
-
     let cdata = []
     for (let i = 0; i < props?.items?.length; i++) {
         //columns.push({title: props.items[i].hInicio + " - " + props.items[i].hFin, index: "estado"}
         let element
-
-
         if (props.day == today && props.items[i].hInicio <= now) {
-            console.log("I:" + props.items[i].hInicio)
-            console.log("N:" + now)
             props.items[i].estado = 'xxx'
         }
 
         switch (props.items[i].estado) {
-            // case 'libre':
-            //     element =
-            //         <Col span={12} >
-            //             <div
-            //                 style={{
-            //                     outline: '.5px rgba(0, 0, 0, 0.16) solid',
-            //                     color: 'green',
-            //                     fontWeight: 'bold',
-            //                     backgroundColor: 'rgba(255,255,255,0.58)', cursor: 'pointer'}}
-            //                 className={styles.item}
-            //                 onClick={() => {cellClick(props.items[i].hInicio)}}
-            //             >
-            //                 {props.items[i].estado}
-            //                 {props.items[i].hInicio + " - " + props.items[i].hFin}
-            //             </div>
-            //         </Col>
-            //     break;
             case 'cita':
                 element =
                     <Col span={24}>
@@ -228,9 +200,11 @@ const Schedule = (props: any) => {
                                 {props.items[i].usuario}
                             </div>
                             <div>
+                                {props.items[i].comment}
+                            </div>
+                            <div>
                                 {props.items[i].usuario &&
                                     <Space wrap>
-
                                         <div style={{paddingTop: '10px'}}>
                                             <Tag color='#0B93CBFF'>
                                                 <a
@@ -246,7 +220,6 @@ const Schedule = (props: any) => {
                                                     Registrar cita
                                                 </a>
                                             </Tag>
-
                                         </div>
                                     </Space>
                                 }
@@ -274,9 +247,6 @@ function Component() {
     const [isModalOpen, setIsModalOpen] = useState({state: false, type: null, data: null})
     const [chunkValue, setChunkValue] = useState()
 
-    console.log('data')
-    console.log(data)
-
     useEffect(() => {
         (async () => {
             const d = await axios.get('http://127.0.0.1:5984/citas/_all_docs?include_docs=true', {
@@ -299,43 +269,18 @@ function Component() {
         setIsModalOpen({state: true, type: e, data: c})
     }
     const changeData = async (e: any, c: any) => {
-        console.log('xxx')
-        console.log(e)
         let items = {...data};
-
-        // let c = 0
-        // for (const fecha in items["Piura"].fechas) {
-        //     console.log(fecha)
-        //     let list = items["Piura"].fechas[fecha].filter((it: any) => { return it.usuario == code});
-        //     console.log('list')
-        //     console.log(list)
-        //     c = c + list.length
-        // }
-        // console.log('C: ' + c);
-        // if (c) {
-        //     setIsModalOpen(true)
-        //     return
-        // }
 
         // @ts-ignore
         let l = (items["Piura"].fechas[currentDay].length)
         // @ts-ignore
         for (let i = 0; i < items["Piura"].fechas[currentDay].length; i++) {
             // @ts-ignore
-
-            console.log(i)
-            console.log(items["Piura"].fechas[currentDay][i]?.hInicio)
-            console.log(e.substring(0, 5))
             if (items["Piura"].fechas[currentDay][i]?.hInicio == e.substring(0, 5)) {
-                console.log('rrrr')
-                console.log(c)
                 items["Piura"].fechas[currentDay][i].estado = c
                 items["Piura"].fechas[currentDay][i].enlace = chunkValue
             }
         }
-
-        console.log('items')
-        console.log(items)
 
         let n = await axios.put('http://127.0.0.1:5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
             {
@@ -347,8 +292,6 @@ function Component() {
                     password: 'admin'
                 }
             })
-        console.log("n:" + JSON.stringify(n))
-
         setData(items)
     }
     const tile = (date: Date) => {
@@ -359,8 +302,6 @@ function Component() {
             let _empty = data["Piura"].fechas[fdate].filter((d: any) => {
                 return d.estado == "libre"
             })
-            console.log(fdate)
-            console.log(_empty.length != 0)
             return (_empty.length == 0)
         } else {
             return true
@@ -372,9 +313,7 @@ function Component() {
     }
 
     // @ts-ignore
-
     const changeCode = (e: any) => {
-        console.log(e)
         setCode(e.target.value)
     }
 
@@ -393,15 +332,6 @@ function Component() {
                 1. Seleccione una fecha libre en el calendario
             </h3>
             <Calendar
-                //tileDisabled={({activeStartDate, date, view }) => date.getDay() === 0}
-                //tileDisabled={({activeStartDate, date, view }) => {tile(date); return false}}
-                // tileDisabled={({activeStartDate, date, view}) => {
-                //     return tile(date)
-                // }}
-                //tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null}
-                //minDetail="month"
-                //activeStartDate={addDays(new Date(), 1)}
-                //minDate={addDays(new Date(), 0)}
                 maxDate={addDays(new Date(), 1)}
                 locale="es-PE"
                 onClickDay={clickDay}
@@ -411,7 +341,7 @@ function Component() {
             </h3>
             {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={_changeData}/>}
             <Modal title="Ingrese dato" open={isModalOpen.state} onOk={handleOk}>
-                <Input value={chunkValue} onChange={changeChunk} />
+                <Input value={chunkValue} onChange={changeChunk}/>
             </Modal>
         </div>
     )
