@@ -60,6 +60,19 @@ const Schedule = (props: any) => {
                             <div style={{
                                 fontSize: '0.9rem',
                                 //textTransform: 'uppercase',
+                                fontWeight: 500,
+                                letterSpacing: '-.6px',
+                                color: '#03498f',
+                                fontFamily: 'Roboto Condensed',
+                                textDecoration: 'underline',
+                                marginTop: '4px',
+                                cursor: 'pointer'
+                            }}>
+                                {props.items[i].enlace}
+                            </div>
+                            <div style={{
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
                                 fontStyle: 'italic',
                                 fontWeight: 500,
                                 letterSpacing: '-.3px',
