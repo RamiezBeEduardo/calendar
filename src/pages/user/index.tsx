@@ -72,8 +72,17 @@ function Component() {
     const [currentDay, setCurrentDay] = useState(format(new Date, 'yyyy-MM-dd'))
     const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
+    const [user, setUser] = useState({name: '', email: ''})
     const [comment, setComment] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const users = {
+        '20220101': {name: 'Mateo San Román', email: 'msanroman@uap.edu.pe'},
+        '20220102': {name: 'Eduardo Ramírez', email: 'eramirez@uap.edu.pe'},
+        '20220103': {name: 'Jesús Minaya',    email: 'jminaya@uap.edu.pe'},
+    }
+
+    console.log(JSON.stringify(user))
 
     useEffect(() => {
         (async () => {
@@ -110,13 +119,17 @@ function Component() {
                 // @ts-ignore
                 items["Piura"].fechas[currentDay][i].estado = "Ocupado"
                 // @ts-ignore
-                items["Piura"].fechas[currentDay][i].usuario = code
+                items["Piura"].fechas[currentDay][i].usuario = user.name
+                // @ts-ignore
+                items["Piura"].fechas[currentDay][i].email = user.email
+                // @ts-ignore
+                items["Piura"].fechas[currentDay][i].code = user.code
                 // @ts-ignore
                 items["Piura"].fechas[currentDay][i].comment = comment
             }
         }
 
-        let n = await axios.put('http://127.0.0.1:5984/citas/' +   "e32885688ef99ddfc19c80ddd9000af3",
+        let n = await axios.put('http://127.0.0.1:5984/citas/' +   "f30b185afaa3de5ad3f41f5d54001c1c",
             {
                 //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                 "_rev": data._rev,
@@ -150,6 +163,11 @@ function Component() {
     }
 
     const changeCode = (e: any) => {
+        // @ts-ignore
+        if (users[e.target.value] && users[e.target.value].name != '' ) {
+            // @ts-ignore
+            setUser({name: users[e.target.value].name, email: users[e.target.value].email})
+        }
         setCode(e.target.value)
     }
 

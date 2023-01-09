@@ -35,7 +35,7 @@
 
 .component :global(.react-calendar) :global(.react-calendar__tile):disabled abbr {
     /*filter: grayscale(1);*/
-    color: #938989 !important;
+    color: rgba(176, 172, 172, 0.17) !important;
     background-color: white;
 }
 

@@ -32,27 +32,42 @@ const Schedule = (props: any) => {
                             color: 'gray',
                             fontWeight: 'bold',
                             backgroundColor: 'rgba(238,238,238,0.58)',
-                            opacity: '1'
+                            opacity: '1',
+                            paddingBottom: '7px'
                         }} className={styles.item}>
-                            <div style={{fontSize: '1.2rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
+                            <div style={{fontFamily: 'Roboto Condensed', color: '#03498f', fontSize: '1.3rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
                                 {props.items[i].hInicio + " - " + props.items[i].hFin}
                             </div>
                             <div style={{
                                 fontSize: '1.2rem',
                                 fontWeight: 'bold',
-                                textTransform: 'uppercase',
-                                letterSpacing: '-.3px'
+                                //textTransform: 'uppercase',
+                                letterSpacing: '-.3px',
+                                color: 'black',
+                                fontFamily: 'Roboto Condensed',
                             }}>
                                 {props.items[i].usuario}
                             </div>
                             <div style={{
-                                fontSize: '.7rem',
-                                color: '#3a3aef',
-                                textDecoration: 'underline',
-                                fontWeight: 'bold',
-                                letterSpacing: '-.3px'
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
+                                letterSpacing: '-.3px',
+                                color: '#03498f',
+                                fontFamily: 'Roboto Condensed',
                             }}>
-                                {props.items[i].enlace}
+                                {props.items[i].email}
+                            </div>
+                            <div style={{
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
+                                fontStyle: 'italic',
+                                fontWeight: 500,
+                                letterSpacing: '-.3px',
+                                color: '#505252',
+                                fontFamily: 'Roboto Condensed',
+                                marginTop: '4px'
+                            }}>
+                                {props.items[i].comment}
                             </div>
                             <div>
                                 {props.items[i].usuario &&
@@ -104,17 +119,44 @@ const Schedule = (props: any) => {
                             backgroundColor: 'rgb(59,105,11)',
                             opacity: '1'
                         }} className={styles.item}>
-                            <div style={{fontSize: '1.2rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
+                            <div style={{fontFamily: 'Roboto Condensed', color: '#03498f', fontSize: '1.3rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
                                 {props.items[i].hInicio + " - " + props.items[i].hFin}
                             </div>
                             <div style={{
                                 fontSize: '1.2rem',
                                 fontWeight: 'bold',
-                                textTransform: 'uppercase',
-                                letterSpacing: '-.3px'
+                                //textTransform: 'uppercase',
+                                letterSpacing: '-.3px',
+                                color: 'black',
+                                fontFamily: 'Roboto Condensed',
                             }}>
                                 {props.items[i].usuario}
                             </div>
+                            <div style={{
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
+                                letterSpacing: '-.3px',
+                                color: '#03498f',
+                                fontFamily: 'Roboto Condensed',
+                            }}>
+                                {props.items[i].email}
+                            </div>
+                            <div style={{
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
+                                fontStyle: 'italic',
+                                fontWeight: 500,
+                                letterSpacing: '-.3px',
+                                color: '#505252',
+                                fontFamily: 'Roboto Condensed',
+                                marginTop: '4px'
+                            }}>
+                                {props.items[i].comment}
+                            </div>
+
+
+
+
 
                             <div>
                                 {props.items[i].usuario &&
@@ -186,22 +228,47 @@ const Schedule = (props: any) => {
                             color: 'gray',
                             fontWeight: 'bold',
                             backgroundColor: 'rgba(238,238,238,0.58)',
-                            opacity: '1'
+                            opacity: '1',
+                            paddingBottom: '7px'
                         }} className={styles.item}>
-                            <div style={{fontSize: '1.2rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
+                            <div style={{fontFamily: 'Roboto Condensed', color: '#03498f', fontSize: '1.3rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
                                 {props.items[i].hInicio + " - " + props.items[i].hFin}
                             </div>
                             <div style={{
                                 fontSize: '1.2rem',
                                 fontWeight: 'bold',
-                                textTransform: 'uppercase',
-                                letterSpacing: '-.3px'
+                                //textTransform: 'uppercase',
+                                letterSpacing: '-.3px',
+                                color: 'black',
+                                fontFamily: 'Roboto Condensed',
                             }}>
                                 {props.items[i].usuario}
                             </div>
-                            <div>
+                            <div style={{
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
+                                letterSpacing: '-.3px',
+                                color: '#03498f',
+                                fontFamily: 'Roboto Condensed',
+                            }}>
+                                {props.items[i].email}
+                            </div>
+                            <div style={{
+                                fontSize: '0.9rem',
+                                //textTransform: 'uppercase',
+                                fontStyle: 'italic',
+                                fontWeight: 500,
+                                letterSpacing: '-.3px',
+                                color: '#505252',
+                                fontFamily: 'Roboto Condensed',
+                                marginTop: '4px'
+                            }}>
                                 {props.items[i].comment}
                             </div>
+                            <div>
+                                {props.items[i].code}
+                            </div>
+
                             <div>
                                 {props.items[i].usuario &&
                                     <Space wrap>
@@ -265,6 +332,10 @@ function Component() {
         setIsModalOpen({state: false, type: null, data: null})
     }
 
+    const handleCancel = () => {
+        setIsModalOpen({state: false, type: null, data: null})
+    }
+
     const _changeData = async (e: any, c: any) => {
         setIsModalOpen({state: true, type: e, data: c})
     }
@@ -325,11 +396,7 @@ function Component() {
             <h2 style={{color: '#003659', marginBottom: '30px', marginTop: '20px', textTransform: "uppercase"}}>Gestión
                 de Citas</h2>
             <h3 style={{color: '#003659', marginBottom: '5px', marginTop: '30px', textTransform: "uppercase"}}>
-                0. Ingrese código de usuario
-            </h3>
-            <Input value={code} onChange={changeCode}/>
-            <h3 style={{color: '#003659', marginBottom: '5px', marginTop: '30px', textTransform: "uppercase"}}>
-                1. Seleccione una fecha libre en el calendario
+                1. Seleccione una fecha en el calendario
             </h3>
             <Calendar
                 maxDate={addDays(new Date(), 1)}
@@ -340,7 +407,7 @@ function Component() {
                 2. Seleccione un horario libre de la lista
             </h3>
             {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={_changeData}/>}
-            <Modal title="Ingrese dato" open={isModalOpen.state} onOk={handleOk}>
+            <Modal title="Actualice información" open={isModalOpen.state} onOk={handleOk} onCancel={handleCancel}>
                 <Input value={chunkValue} onChange={changeChunk}/>
             </Modal>
         </div>

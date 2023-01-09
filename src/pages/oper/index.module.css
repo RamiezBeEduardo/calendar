@@ -28,7 +28,6 @@
 }
 
 .component :global(.react-calendar) :global(.react-calendar__tile):disabled {
-
     background-color: white;
 }
 
@@ -53,7 +52,7 @@
 .item {
     background: #d9d4d4;
     margin-top: 10px;
-    height: 100px;
+    height: 130px;
     display: flex;
     justify-items: center;
     align-items: center;
