@@ -129,10 +129,10 @@ const Schedule = (props: any) => {
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'white',
                             fontWeight: 'bold',
-                            backgroundColor: 'rgb(59,105,11)',
+                            backgroundColor: 'rgb(60,112,9)',
                             opacity: '1'
                         }} className={styles.item}>
-                            <div style={{fontFamily: 'Roboto Condensed', color: '#03498f', fontSize: '1.3rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
+                            <div style={{fontFamily: 'Roboto Condensed', color: '#ffffff', fontSize: '1.3rem', fontWeight: 'bold', textTransform: 'uppercase'}}>
                                 {props.items[i].hInicio + " - " + props.items[i].hFin}
                             </div>
                             <div style={{
@@ -140,7 +140,7 @@ const Schedule = (props: any) => {
                                 fontWeight: 'bold',
                                 //textTransform: 'uppercase',
                                 letterSpacing: '-.3px',
-                                color: 'black',
+                                color: 'white',
                                 fontFamily: 'Roboto Condensed',
                             }}>
                                 {props.items[i].usuario}
@@ -149,7 +149,7 @@ const Schedule = (props: any) => {
                                 fontSize: '0.9rem',
                                 //textTransform: 'uppercase',
                                 letterSpacing: '-.3px',
-                                color: '#03498f',
+                                color: '#ffffff',
                                 fontFamily: 'Roboto Condensed',
                             }}>
                                 {props.items[i].email}
@@ -160,17 +160,12 @@ const Schedule = (props: any) => {
                                 fontStyle: 'italic',
                                 fontWeight: 500,
                                 letterSpacing: '-.3px',
-                                color: '#505252',
+                                color: '#ffffff',
                                 fontFamily: 'Roboto Condensed',
                                 marginTop: '4px'
                             }}>
                                 {props.items[i].comment}
                             </div>
-
-
-
-
-
                             <div>
                                 {props.items[i].usuario &&
                                     <Space wrap>
@@ -311,8 +306,6 @@ const Schedule = (props: any) => {
 
         cdata.push(element)
     }
-
-
     return (
         <Row gutter={16} className={styles.grid}>
             {cdata}
@@ -366,7 +359,7 @@ function Component() {
             }
         }
 
-        let n = await axios.put('http://127.0.0.1:5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
+        let n = await axios.put('http://127.0.0.1:5984/citas/' + "e32885688ef99ddfc19c80ddd9000af3",
             {
                 "_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                 ...items
@@ -406,9 +399,28 @@ function Component() {
     }
     return (
         <div className={styles.component}>
-            <h2 style={{color: '#003659', marginBottom: '30px', marginTop: '20px', textTransform: "uppercase"}}>Gestión
-                de Citas</h2>
-            <h3 style={{color: '#003659', marginBottom: '5px', marginTop: '30px', textTransform: "uppercase"}}>
+            <img style={{width: '50%'}} src='./logo.png' />
+            <h1 style={{
+                color: '#003659',
+                marginBottom: '30px',
+                marginTop: '20px',
+                fontFamily: 'Roboto Condensed',
+                fontSize: '40px',
+                fontWeight: '900',
+                letterSpacing: '-2px',
+                textTransform: "uppercase"
+            }}>Gestión
+                de Citas</h1>
+            <h3 style={{
+                color: '#003659',
+                marginBottom: '5px',
+                marginTop: '30px',
+                textTransform: "uppercase",
+                fontFamily: 'Roboto Condensed',
+                fontSize: '20px',
+                fontWeight: '900',
+                letterSpacing: '-.2px'
+            }}>
                 1. Seleccione una fecha en el calendario
             </h3>
             <Calendar
@@ -416,7 +428,16 @@ function Component() {
                 locale="es-PE"
                 onClickDay={clickDay}
             />
-            <h3 style={{color: '#003659', marginBottom: '0px', marginTop: '30px', textTransform: "uppercase"}}>
+            <h3 style={{
+                color: '#003659',
+                marginBottom: '5px',
+                marginTop: '30px',
+                textTransform: "uppercase",
+                fontFamily: 'Roboto Condensed',
+                fontSize: '20px',
+                fontWeight: '900',
+                letterSpacing: '-.2px'
+            }}>
                 2. Seleccione un horario libre de la lista
             </h3>
             {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={_changeData}/>}
