@@ -1,4 +1,4 @@
-import {useEffect, useState, Suspense} from 'react'
+import {useEffect, useState, Suspense, unstable_batchUpdates} from 'react'
 import styles from './index.module.css'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
@@ -75,6 +75,7 @@ function Component() {
     const [user, setUser] = useState({name: '', email: ''})
     const [comment, setComment] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
     const users = {
         '20220101': {name: 'Mateo San Román', email: 'msanroman@uap.edu.pe'},
@@ -98,49 +99,60 @@ function Component() {
     const handleOk = () => {
         setIsModalOpen(false)
     }
+
+    const handleConfirmOk = () => {
+        setIsConfirmOpen(false)
+    }
     const changeData = async (e: any) => {
-        let items = {...data};
-        let c = 0
-        for (const fecha in items["Piura"].fechas) {
-            let list = items["Piura"].fechas[fecha].filter((it: any) => { return it.usuario == code});
-            c = c + list.length
-        }
-        if (c) {
-            setIsModalOpen(true)
-            return
-        }
-
-        // @ts-ignore
-        let l = (items["Piura"].fechas[currentDay].length)
-        // @ts-ignore
-        for (let i = 0; i < items["Piura"].fechas[currentDay].length; i++) {
-            // @ts-ignore
-            if (items["Piura"].fechas[currentDay][i]?.hInicio == e.substring(0, 5)) {
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].estado = "Ocupado"
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].usuario = user.name
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].email = user.email
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].code = user.code
-                // @ts-ignore
-                items["Piura"].fechas[currentDay][i].comment = comment
+        if (user.name && comment) {
+            let items = {...data};
+            let c = 0
+            for (const fecha in items["Piura"].fechas) {
+                let list = items["Piura"].fechas[fecha].filter((it: any) => {
+                    return it.usuario == code
+                });
+                c = c + list.length
             }
-        }
+            if (c) {
+                setIsModalOpen(true)
+                return
+            }
 
-        let n = await axios.put('http://127.0.0.1:5984/citas/' +   "e32885688ef99ddfc19c80ddd9000af3",
-            {
-                //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
-                "_rev": data._rev,
-                ...items
-            }, {
-                auth: {
-                    username: 'admin',
-                    password: 'admin'
+            // @ts-ignore
+            let l = (items["Piura"].fechas[currentDay].length)
+            // @ts-ignore
+            for (let i = 0; i < items["Piura"].fechas[currentDay].length; i++) {
+                // @ts-ignore
+                if (items["Piura"].fechas[currentDay][i]?.hInicio == e.substring(0, 5)) {
+                    // @ts-ignore
+                    items["Piura"].fechas[currentDay][i].estado = "Ocupado"
+                    // @ts-ignore
+                    items["Piura"].fechas[currentDay][i].usuario = user.name
+                    // @ts-ignore
+                    items["Piura"].fechas[currentDay][i].email = user.email
+                    // @ts-ignore
+                    items["Piura"].fechas[currentDay][i].code = user.code
+                    // @ts-ignore
+                    items["Piura"].fechas[currentDay][i].comment = comment
                 }
-        })
-        setData(items)
+            }
+
+            let n = await axios.put('http://127.0.0.1:5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
+                {
+                    //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
+                    "_rev": data._rev,
+                    ...items
+                }, {
+                    auth: {
+                        username: 'admin',
+                        password: 'admin'
+                    }
+                })
+            //unstable_batchUpdates(() => {
+                setData(items)
+                setIsConfirmOpen(true)
+            //})
+        }
     }
     const tile = (date: Date) => {
         let fdate = format(date, 'yyyy-MM-dd')
@@ -224,61 +236,68 @@ function Component() {
             }}>
                 {user.email}
             </h3>
-
-            <h3 style={{
-                color: '#003659',
-                marginBottom: '5px',
-                marginTop: '30px',
-                textTransform: "uppercase",
-                fontFamily: 'Roboto Condensed',
-                fontSize: '20px',
-                fontWeight: '900',
-                letterSpacing: '-.2px'
-            }}>
-            1. Seleccione una fecha libre en el calendario
-            </h3>
-            <Calendar
-                //tileDisabled={({activeStartDate, date, view }) => date.getDay() === 0}
-                //tileDisabled={({activeStartDate, date, view }) => {tile(date); return false}}
-                tileDisabled={({activeStartDate, date, view}) => {
-                    return tile(date)
-                }}
-                //tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null}
-                //minDetail="month"
-                //activeStartDate={addDays(new Date(), 1)}
-                minDate={addDays(new Date(), 0)}
-                maxDate={addDays(new Date(), 10)}
-                locale="es-PE"
-                onClickDay={clickDay}
-            />
-            <h3 style={{
-                color: '#003659',
-                marginBottom: '5px',
-                marginTop: '30px',
-                textTransform: "uppercase",
-                fontFamily: 'Roboto Condensed',
-                fontSize: '20px',
-                fontWeight: '900',
-                letterSpacing: '-.2px'
-            }}>
-                2. Describa la razón de su cita
-            </h3>
-            <TextArea value={comment} onChange={changeComment} />
-            <h3 style={{
-                color: '#003659',
-                marginBottom: '5px',
-                marginTop: '30px',
-                textTransform: "uppercase",
-                fontFamily: 'Roboto Condensed',
-                fontSize: '20px',
-                fontWeight: '900',
-                letterSpacing: '-.2px'
-            }}>
-                2. Seleccione un horario libre de la lista
-            </h3>
-            {data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/> }
+            {
+            user.name &&
+                <>
+                        <h3 style={{
+                            color: '#003659',
+                            marginBottom: '5px',
+                            marginTop: '30px',
+                            textTransform: "uppercase",
+                            fontFamily: 'Roboto Condensed',
+                            fontSize: '20px',
+                            fontWeight: '900',
+                            letterSpacing: '-.2px'
+                        }}>
+                        1. Seleccione una fecha libre en el calendario
+                        </h3>
+                        <Calendar
+                            //tileDisabled={({activeStartDate, date, view }) => date.getDay() === 0}
+                            //tileDisabled={({activeStartDate, date, view }) => {tile(date); return false}}
+                            tileDisabled={({activeStartDate, date, view}) => {
+                                return tile(date)
+                            }}
+                            //tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null}
+                            //minDetail="month"
+                            //activeStartDate={addDays(new Date(), 1)}
+                            minDate={addDays(new Date(), 0)}
+                            maxDate={addDays(new Date(), 10)}
+                            locale="es-PE"
+                            onClickDay={clickDay}
+                        />
+                        <h3 style={{
+                            color: '#003659',
+                            marginBottom: '5px',
+                            marginTop: '30px',
+                            textTransform: "uppercase",
+                            fontFamily: 'Roboto Condensed',
+                            fontSize: '20px',
+                            fontWeight: '900',
+                            letterSpacing: '-.2px'
+                        }}>
+                        2. Describa la razón de su cita
+                        </h3>
+                        <TextArea value={comment} onChange={changeComment} />
+                            <h3 style={{
+                            color: '#003659',
+                            marginBottom: '5px',
+                            marginTop: '30px',
+                            textTransform: "uppercase",
+                            fontFamily: 'Roboto Condensed',
+                            fontSize: '20px',
+                            fontWeight: '900',
+                            letterSpacing: '-.2px'
+                        }}>
+                        2. Seleccione un horario libre de la lista
+                        </h3>
+                    </>
+            }
+            {user.name && data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/> }
             <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} >
-                Usuario {code}, Ud. ya tiene una cita
+                Usuario {user.name}, Ud. ya tiene una cita
+            </Modal>
+            <Modal title="Basic Modal" open={isConfirmOpen} onOk={handleConfirmOk} >
+                Usuario {user.name}, su cita ha sido programada!
             </Modal>
         </div>
     )

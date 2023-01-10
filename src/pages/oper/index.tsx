@@ -359,7 +359,7 @@ function Component() {
             }
         }
 
-        let n = await axios.put('http://127.0.0.1:5984/citas/' + "e32885688ef99ddfc19c80ddd9000af3",
+        let n = await axios.put('http://127.0.0.1:5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
             {
                 "_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                 ...items
@@ -424,7 +424,7 @@ function Component() {
                 1. Seleccione una fecha en el calendario
             </h3>
             <Calendar
-                maxDate={addDays(new Date(), 1)}
+                maxDate={addDays(new Date(), 10)}
                 locale="es-PE"
                 onClickDay={clickDay}
             />
