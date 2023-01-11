@@ -11,7 +11,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
       <BrowserRouter>
       <Routes>
-          <Route path="user" element={<User />} />
+          <Route path="user/:code/:name/:email/:sede" element={<User />} />
           <Route path="oper" element={<Oper />} />
       </Routes>
       </BrowserRouter>

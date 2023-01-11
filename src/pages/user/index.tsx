@@ -9,10 +9,12 @@ import {Typography, Table, Tag, Col, Row, Input, Modal} from "antd";
 import axios from 'axios'
 import "@fontsource/roboto-condensed"
 import "@fontsource/passion-one"
+import { BrowserRouter as Router, Switch, Route, Link, useParams, useLocation } from "react-router-dom";
 
 const TextArea = Input.TextArea
 
 const Schedule = (props: any) => {
+
     const cellClick = (e: any) => {
         props.onChangeData(e)
     }
@@ -72,11 +74,16 @@ function Component() {
     const [currentDay, setCurrentDay] = useState(format(new Date, 'yyyy-MM-dd'))
     const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
-    const [user, setUser] = useState({name: '', email: ''})
+    //const [user, setUser] = useState({name: '', email: ''})
     const [comment, setComment] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 
+    const user = useParams();
+    const y = useLocation();
+    console.log('x')
+    //console.log(x)
+    console.log(y)
     const users = {
         '20220101': {name: 'Mateo San Román', email: 'msanroman@uap.edu.pe'},
         '20220102': {name: 'Eduardo Ramírez', email: 'eramirez@uap.edu.pe'},
@@ -84,10 +91,11 @@ function Component() {
     }
 
     console.log(JSON.stringify(user))
+    const ip = '10.100.5.226'
 
     useEffect(() => {
         (async () => {
-            const d = await axios.get('http://127.0.0.1:5984/citas/_all_docs?include_docs=true', {
+            const d = await axios.get('http://' + ip + ':5984/citas/_all_docs?include_docs=true', {
                 auth: {
                     username: 'admin',
                     password: 'admin'
@@ -137,7 +145,7 @@ function Component() {
                 }
             }
 
-            let n = await axios.put('http://127.0.0.1:5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
+            let n = await axios.put('http://' + ip + ':5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
                 {
                     //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                     "_rev": data._rev,
@@ -189,7 +197,7 @@ function Component() {
 
     return (
         <div className={styles.component}>
-            <img style={{width: '50%'}} src='./logo.png' />
+            {/*<img style={{width: '50%'}} src='./logo.png' />*/}
             <h1 style={{
                 color: '#003659',
                 marginBottom: '30px',
@@ -201,41 +209,42 @@ function Component() {
                 textTransform: "uppercase"
             }}>Gestión
                 de Citas</h1>
-            <h3 style={{
-                color: '#003659',
-                marginBottom: '5px',
-                marginTop: '30px',
-                textTransform: "uppercase",
-                fontFamily: 'Roboto Condensed',
-                fontSize: '20px',
-                fontWeight: '900',
-                letterSpacing: '-.2px'
-            }}>
-                0. Ingrese código de usuario
-            </h3>
-            <Input value={code} onChange={changeCode} />
-            <h3 style={{
-                color: '#252626',
-                marginBottom: '5px',
-                fontFamily: 'Roboto Condensed',
-                fontSize: '21px',
-                fontWeight: '500',
-                letterSpacing: '-.2px',
-                marginTop: '10px'
-            }}>
-                {user.name}
-            </h3>
-            <h3 style={{
-                color: '#023581',
-                marginBottom: '5px',
-                fontFamily: 'Roboto Condensed',
-                fontSize: '16px',
-                fontWeight: '500',
-                letterSpacing: '-.2px',
-                marginTop: '-10px'
-            }}>
-                {user.email}
-            </h3>
+
+            {/*<h3 style={{*/}
+            {/*    color: '#003659',*/}
+            {/*    marginBottom: '5px',*/}
+            {/*    marginTop: '30px',*/}
+            {/*    textTransform: "uppercase",*/}
+            {/*    fontFamily: 'Roboto Condensed',*/}
+            {/*    fontSize: '20px',*/}
+            {/*    fontWeight: '900',*/}
+            {/*    letterSpacing: '-.2px'*/}
+            {/*}}>*/}
+            {/*    0. Ingrese código de usuario*/}
+            {/*</h3>*/}
+            {/*<Input value={code} onChange={changeCode} />*/}
+            {/*<h3 style={{*/}
+            {/*    color: '#252626',*/}
+            {/*    marginBottom: '5px',*/}
+            {/*    fontFamily: 'Roboto Condensed',*/}
+            {/*    fontSize: '21px',*/}
+            {/*    fontWeight: '500',*/}
+            {/*    letterSpacing: '-.2px',*/}
+            {/*    marginTop: '10px'*/}
+            {/*}}>*/}
+            {/*    {user.name}*/}
+            {/*</h3>*/}
+            {/*<h3 style={{*/}
+            {/*    color: '#023581',*/}
+            {/*    marginBottom: '5px',*/}
+            {/*    fontFamily: 'Roboto Condensed',*/}
+            {/*    fontSize: '16px',*/}
+            {/*    fontWeight: '500',*/}
+            {/*    letterSpacing: '-.2px',*/}
+            {/*    marginTop: '-10px'*/}
+            {/*}}>*/}
+            {/*    {user.email}*/}
+            {/*</h3>*/}
             {
             user.name &&
                 <>
