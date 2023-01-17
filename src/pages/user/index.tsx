@@ -91,7 +91,7 @@ function Component() {
     }
 
     console.log(JSON.stringify(user))
-    const ip = '10.100.5.226'
+    const ip = '10.100.25.26'
 
     useEffect(() => {
         (async () => {
@@ -117,10 +117,11 @@ function Component() {
             let c = 0
             for (const fecha in items["Piura"].fechas) {
                 let list = items["Piura"].fechas[fecha].filter((it: any) => {
-                    return it.usuario == code
+                    return it.code == user.code
                 });
                 c = c + list.length
             }
+            console.log("c = " + c)
             if (c) {
                 setIsModalOpen(true)
                 return
@@ -145,7 +146,7 @@ function Component() {
                 }
             }
 
-            let n = await axios.put('http://' + ip + ':5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
+            let n = await axios.put('http://' + ip + ':5984/citas/' + "c060f622644b22e295dccb02c50019e2",
                 {
                     //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                     "_rev": data._rev,
@@ -270,7 +271,7 @@ function Component() {
                             //minDetail="month"
                             //activeStartDate={addDays(new Date(), 1)}
                             minDate={addDays(new Date(), 0)}
-                            maxDate={addDays(new Date(), 10)}
+                            maxDate={addDays(new Date(), 20)}
                             locale="es-PE"
                             onClickDay={clickDay}
                         />
@@ -302,10 +303,10 @@ function Component() {
                     </>
             }
             {user.name && data && <Schedule items={data["Piura"].fechas[currentDay]} day={currentDay} onChangeData={changeData}/> }
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} >
+            <Modal open={isModalOpen} onOk={handleOk} >
                 Usuario {user.name}, Ud. ya tiene una cita
             </Modal>
-            <Modal title="Basic Modal" open={isConfirmOpen} onOk={handleConfirmOk} >
+            <Modal open={isConfirmOpen} onOk={handleConfirmOk} >
                 Usuario {user.name}, su cita ha sido programada!
             </Modal>
         </div>

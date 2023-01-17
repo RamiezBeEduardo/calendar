@@ -318,11 +318,13 @@ function Component() {
     const [data, setData] = useState(null);
     const [code, setCode] = useState(202001)
     const [isModalOpen, setIsModalOpen] = useState({state: false, type: null, data: null})
-    const [chunkValue, setChunkValue] = useState()
+    const [chunkValue, setChunkValue] = useState("")
 
+
+    const ip = '10.100.25.26'
     useEffect(() => {
         (async () => {
-            const d = await axios.get('http://127.0.0.1:5984/citas/_all_docs?include_docs=true', {
+            const d = await axios.get('http://' + ip + ':5984/citas/_all_docs?include_docs=true', {
                 auth: {
                     username: 'admin',
                     password: 'admin'
@@ -335,10 +337,12 @@ function Component() {
 
     const handleOk = () => {
         changeData(isModalOpen.type, isModalOpen.data)
+        setChunkValue("")
         setIsModalOpen({state: false, type: null, data: null})
     }
 
     const handleCancel = () => {
+        setChunkValue("")
         setIsModalOpen({state: false, type: null, data: null})
     }
 
@@ -359,7 +363,9 @@ function Component() {
             }
         }
 
-        let n = await axios.put('http://127.0.0.1:5984/citas/' + "f30b185afaa3de5ad3f41f5d54001c1c",
+        
+
+        let n = await axios.put('http://' + ip + '/citas/' + "c060f622644b22e295dccb02c50019e2",
             {
                 "_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                 ...items
@@ -424,7 +430,7 @@ function Component() {
                 1. Seleccione una fecha en el calendario
             </h3>
             <Calendar
-                maxDate={addDays(new Date(), 10)}
+                maxDate={addDays(new Date(), 20)}
                 locale="es-PE"
                 onClickDay={clickDay}
             />
