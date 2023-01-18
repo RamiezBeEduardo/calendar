@@ -31,7 +31,7 @@ const Schedule = (props: any) => {
         switch (props.items[i].estado) {
             case 'libre':
                 element =
-                    <Col span={6} >
+                    <Col key={Math.random()} span={6} >
                         <div
                             style={{
                                 outline: '.5px rgba(0, 0, 0, 0.16) solid',
@@ -45,7 +45,7 @@ const Schedule = (props: any) => {
                 break;
             default:
                 element =
-                    <Col span={6}>
+                    <Col key={Math.random()} span={6} >
                         <div style={{
                             outline: '.5px rgba(0, 0, 0, 0.16) solid',
                             color: 'gray',
@@ -81,14 +81,7 @@ function Component() {
 
     const user = useParams();
     const y = useLocation();
-    console.log('x')
-    //console.log(x)
-    console.log(y)
-    const users = {
-        '20220101': {name: 'Mateo San Román', email: 'msanroman@uap.edu.pe'},
-        '20220102': {name: 'Eduardo Ramírez', email: 'eramirez@uap.edu.pe'},
-        '20220103': {name: 'Jesús Minaya',    email: 'jminaya@uap.edu.pe'},
-    }
+
 
     console.log(JSON.stringify(user))
     const ip = '10.100.25.26'
@@ -115,12 +108,15 @@ function Component() {
         if (user.name && comment) {
             let items = {...data};
             let c = 0
+            let list = []
             for (const fecha in items["Piura"].fechas) {
-                let list = items["Piura"].fechas[fecha].filter((it: any) => {
+                list = items["Piura"].fechas[fecha].filter((it: any) => {
                     return it.code == user.code
                 });
                 c = c + list.length
             }
+            console.log('list')
+            console.log(list)
             console.log("c = " + c)
             if (c) {
                 setIsModalOpen(true)
@@ -171,8 +167,6 @@ function Component() {
             let _empty = data["Piura"].fechas[fdate].filter((d: any) => {
                 return d.estado == "libre"
             })
-            console.log(fdate)
-            console.log(_empty.length != 0)
             return (_empty.length == 0)
         } else {
             return true
@@ -196,6 +190,40 @@ function Component() {
         setComment(e.target.value)
     }
 
+    let list = []
+    if (data) {
+        for (const fecha in data["Piura"].fechas) {
+            console.log("fecha " + fecha)
+
+            for (let i=0; i  < data["Piura"].fechas[fecha].length; i++) 
+            {
+                if (data["Piura"].fechas[fecha][i].code == user.code) {
+                    //list.push({...data["Piura"].fechas[fecha][i], fecha: fecha })
+                    list.push(
+                        <Col key={Math.random()} span={24} >
+                        <div style={{
+                            outline: '.5px rgba(0, 0, 0, 0.16) solid',
+                            color: 'gray',
+                            fontWeight: 'bold',
+                            backgroundColor: 'rgba(238,238,238,0.58)',
+                            opacity: '.6'
+                        }} className={styles.item} >
+                            <div>{data["Piura"].fechas[fecha][i].fecha}</div>
+                            <div style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}>{data["Piura"].fechas[fecha][i].hInicio + " - " + data["Piura"].fechas[fecha][i].hFin}</div>
+                        </div>
+                    </Col>
+                    )
+                }
+            }
+
+        }
+        console.log('list')
+        console.log(list)
+    }
+    else {
+        console.log('lis is empty') 
+    }
+
     return (
         <div className={styles.component}>
             {/*<img style={{width: '50%'}} src='./logo.png' />*/}
@@ -210,6 +238,21 @@ function Component() {
                 textTransform: "uppercase"
             }}>Gestión
                 de Citas</h1>
+                {list.length && 
+                <h3 style={{
+                    color: '#003659',
+                    marginBottom: '5px',
+                    marginTop: '30px',
+                    textTransform: "uppercase",
+                    fontFamily: 'Roboto Condensed',
+                    fontSize: '20px',
+                    fontWeight: '900',
+                    letterSpacing: '-.2px'
+                }}>
+                    Listado de Citas
+                </h3>
+                }
+                    { list }
 
             {/*<h3 style={{*/}
             {/*    color: '#003659',*/}
