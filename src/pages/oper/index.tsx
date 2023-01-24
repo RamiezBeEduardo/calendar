@@ -321,10 +321,10 @@ function Component() {
     const [chunkValue, setChunkValue] = useState("")
 
 
-    const ip = '10.100.25.26'
+    const ip = import.meta.env.VITE_COUCH_IP
     useEffect(() => {
         (async () => {
-            const d = await axios.get('http://' + ip + ':5984/citas/_all_docs?include_docs=true', {
+            const d = await axios.get('http://' + import.meta.env.VITE_COUCH_IP  + ':5984/citas/_all_docs?include_docs=true', {
                 auth: {
                     username: 'admin',
                     password: 'admin'
@@ -363,11 +363,13 @@ function Component() {
             }
         }
 
-        
+        console.log('rev')
+        console.log(data._rev)
+        //5-f204afdaf9a0cb61f77090bdadd3d085
 
-        let n = await axios.put('http://' + ip + '/citas/' + "c060f622644b22e295dccb02c50019e2",
+        let n = await axios.put('http://' + import.meta.env.VITE_COUCH_IP + ':5984/citas/' + import.meta.env.VITE_COUCH_ID,
             {
-                "_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
+                "_rev": data._rev,
                 ...items
             }, {
                 auth: {

@@ -84,7 +84,7 @@ function Component() {
 
 
     console.log(JSON.stringify(user))
-    const ip = '10.100.25.26'
+    const ip = import.meta.env.VITE_COUCH_IP
 
     useEffect(() => {
         (async () => {
@@ -142,7 +142,7 @@ function Component() {
                 }
             }
 
-            let n = await axios.put('http://' + ip + ':5984/citas/' + "c060f622644b22e295dccb02c50019e2",
+            let n = await axios.put('http://' + import.meta.env.VITE_COUCH_IP + ':5984/citas/' + import.meta.env.VITE_COUCH_ID,
                 {
                     //"_rev": "2-3cabd9766a035ddd7395f42fbb86520b",
                     "_rev": data._rev,
@@ -190,7 +190,7 @@ function Component() {
         setComment(e.target.value)
     }
 
-    let list = []
+    let list = null
     if (data) {
         for (const fecha in data["Piura"].fechas) {
             console.log("fecha " + fecha)
@@ -199,6 +199,7 @@ function Component() {
             {
                 if (data["Piura"].fechas[fecha][i].code == user.code) {
                     //list.push({...data["Piura"].fechas[fecha][i], fecha: fecha })
+                    if (!list) list = [];
                     list.push(
                         <Col key={Math.random()} span={24} >
                         <div style={{
@@ -208,8 +209,11 @@ function Component() {
                             backgroundColor: 'rgba(238,238,238,0.58)',
                             opacity: '.6'
                         }} className={styles.item} >
-                            <div>{data["Piura"].fechas[fecha][i].fecha}</div>
-                            <div style={{fontSize: '.6rem', fontStyle: 'italic', textTransform: 'uppercase'}}>{data["Piura"].fechas[fecha][i].hInicio + " - " + data["Piura"].fechas[fecha][i].hFin}</div>
+                            <div style={{fontSize: '1.1rem', fontWeight: 700, textTransform: 'uppercase', color: '#003659'}}>{fecha}</div>
+                            <div style={{fontSize: '.80rem', fontStyle: 'italic', textTransform: 'uppercase', color: 'black'}}>{data["Piura"].fechas[fecha][i].hInicio + " - " + data["Piura"].fechas[fecha][i].hFin}</div>
+                            <div style={{fontSize: '1.1rem', fontWeight: 700, textTransform: 'uppercase', color: '#003659'}}>{data["Piura"].fechas[fecha][i].enlace}</div>
+                            <div style={{fontSize: '1.1rem', fontWeight: 700, textTransform: 'uppercase', color: '#003659'}}>{data["Piura"].fechas[fecha][i].comment}</div>
+                            <div style={{fontSize: '1.1rem', fontWeight: 700, textTransform: 'uppercase', color: '#003659'}}>{data["Piura"].fechas[fecha][i].estado}</div>
                         </div>
                     </Col>
                     )
@@ -238,7 +242,7 @@ function Component() {
                 textTransform: "uppercase"
             }}>Gestión
                 de Citas</h1>
-                {list.length && 
+                {list &&
                 <h3 style={{
                     color: '#003659',
                     marginBottom: '5px',
@@ -314,7 +318,7 @@ function Component() {
                             //minDetail="month"
                             //activeStartDate={addDays(new Date(), 1)}
                             minDate={addDays(new Date(), 0)}
-                            maxDate={addDays(new Date(), 20)}
+                            maxDate={addDays(new Date(), 90)}
                             locale="es-PE"
                             onClickDay={clickDay}
                         />
