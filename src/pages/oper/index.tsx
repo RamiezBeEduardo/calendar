@@ -467,19 +467,6 @@ function Component() {
     );
     setData(items);
   };
-  const tile = (date: Date) => {
-    let fdate = format(date, "yyyy-MM-dd");
-    // @ts-ignore
-    if (data && data["Piura"]?.fechas[fdate]) {
-      // @ts-ignore
-      let _empty = data["Piura"].fechas[fdate].filter((d: any) => {
-        return d.estado == "libre";
-      });
-      return _empty.length == 0;
-    } else {
-      return true;
-    }
-  };
 
   const clickDay = (day: any) => {
     setCurrentDay(format(day, "yyyy-MM-dd"));
@@ -493,6 +480,21 @@ function Component() {
   const changeChunk = (e: any) => {
     setChunkValue(e.target.value);
   };
+
+  const tile = (date: Date) => {
+    let fdate = format(date, "yyyy-MM-dd");
+    // @ts-ignore
+    if (data && data["Piura"]?.fechas[fdate]) {
+      // @ts-ignore
+      let _empty = data["Piura"].fechas[fdate].filter((d: any) => {
+        return d.estado != "libre";
+      });
+      return _empty.length == 0;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <div className={styles.component}>
       <img style={{ width: "50%" }} src="./logo.png" />
@@ -526,6 +528,9 @@ function Component() {
       </h3>
       <Calendar
         maxDate={addDays(new Date(), 20)}
+        tileDisabled={({ activeStartDate, date, view }) => {
+          return tile(date);
+        }}
         locale="es-PE"
         onClickDay={clickDay}
       />

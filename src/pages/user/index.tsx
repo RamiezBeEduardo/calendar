@@ -192,6 +192,8 @@ function Component() {
       setData(items);
       setIsConfirmOpen(true);
       //})
+    } else {
+      alert("Por favor, ingrese una razón para su cita");
     }
   };
   const tile = (date: Date) => {
