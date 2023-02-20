@@ -331,8 +331,6 @@ function Component() {
           textTransform: "uppercase",
         }}
       >
-        <br />
-        <br />
         Gestión de Citas Virtuales
       </h1>
       {list && (
