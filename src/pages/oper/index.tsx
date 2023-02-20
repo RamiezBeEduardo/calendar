@@ -46,6 +46,7 @@ const Schedule = (props: any) => {
                 backgroundColor: "rgba(238,238,238,0.58)",
                 opacity: "1",
                 paddingBottom: "7px",
+				paddingTop: "6px"
               }}
               className={styles.item}
             >
@@ -108,6 +109,9 @@ const Schedule = (props: any) => {
                   color: "#505252",
                   fontFamily: "Roboto Condensed",
                   marginTop: "4px",
+				  textOverflow: "ellipsis",
+				  maxHeight: "30px",
+				  overflow: "hidden"
                 }}
               >
                 {props.items[i].comment}
@@ -301,6 +305,7 @@ const Schedule = (props: any) => {
                 backgroundColor: "rgba(238,238,238,0.58)",
                 opacity: "1",
                 paddingBottom: "7px",
+			    marginTop: "6px"
               }}
               className={styles.item}
             >
@@ -311,6 +316,7 @@ const Schedule = (props: any) => {
                   fontSize: "1.3rem",
                   fontWeight: "bold",
                   textTransform: "uppercase",
+				  marginTop: "6px"
                 }}
               >
                 {props.items[i].hInicio + " - " + props.items[i].hFin}
@@ -348,6 +354,9 @@ const Schedule = (props: any) => {
                   color: "#505252",
                   fontFamily: "Roboto Condensed",
                   marginTop: "4px",
+				  textOverflow: "ellipsis",
+				  maxHeight: "30px",
+				  overflow: "hidden"
                 }}
               >
                 {props.items[i].comment}
