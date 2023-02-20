@@ -394,9 +394,11 @@ const Schedule = (props: any) => {
     cdata.push(element);
   }
   return (
-    <Row gutter={16} className={styles.grid}>
-      {cdata}
-    </Row>
+	<div style={{height: 'calc(100% - 600px)', overflowY: 'scroll', overflowX: 'hidden' }}>
+		<Row gutter={16} className={styles.grid}>
+		  {cdata}
+		</Row>
+	</div>
   );
 };
 
